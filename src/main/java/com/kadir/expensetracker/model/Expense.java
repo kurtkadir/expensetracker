@@ -9,10 +9,10 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Data
+
 
 @Entity
-
+@Data
 public class Expense {
 
     @Id

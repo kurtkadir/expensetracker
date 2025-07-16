@@ -23,11 +23,12 @@
         </thead>
         <tbody>
         <tr th:each="expense : ${expenses}">
-            <td th:text="${expense.title}">Market</td>
-            <td th:text="${expense.category}">Gıda</td>
-            <td th:text="${expense.amount}">100.00</td>
-            <td th:text="${expense.date}">2025-07-15</td>
+            <td th:text="${expense.title}"></td>
+            <td th:text="${expense.category}"></td>
+            <td th:text="${expense.amount}"></td>
+            <td th:text="${expense.date}"></td>
             <td>
+                <a th:href="@{'/expenses/edit/' + ${expense.id}}" class="btn btn-sm btn-warning">Düzenle</a>
                 <a th:href="@{'/expenses/delete/' + ${expense.id}}" class="btn btn-sm btn-danger">Sil</a>
             </td>
         </tr>

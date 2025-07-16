@@ -16,8 +16,12 @@
         </div>
 
         <div class="mb-3">
-            <label for="category" class="form-label">Kategori</label>
-            <input type="text" th:field="*{category}" class="form-control" id="category" required>
+            <label for="title" class="form-label">Kategori</label>
+            <select th:field="*{category}" class="form-select" id="category" required>
+                <option value="" disabled>-- Kategori Seçin --</option>
+                <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"></option>
+            </select>
+
         </div>
 
         <div class="mb-3">

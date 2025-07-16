@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/expenses")
 public class ExpenseController {
@@ -14,23 +16,29 @@ public class ExpenseController {
 
     public ExpenseController(ExpenseService expenseService) {
         this.expenseService = expenseService;
+
+
     }
 
-    // Listeleme
+
+    // Listing
     @GetMapping
     public String listExpenses(Model model) {
         model.addAttribute("expenses", expenseService.getAllExpenses());
         return "expenses"; // templates/expenses.html
     }
 
-    // Yeni harcama formu
+    //new
     @GetMapping("/new")
     public String showExpenseForm(Model model) {
-        model.addAttribute("expense", new Expense());
-        return "expense_form"; // templates/expense_form.html
+        prepareExpenseForm(model, new Expense());
+        return "expense_form";
     }
 
-    // Kaydet
+
+
+
+    // Save
     @PostMapping("/save")
     public String saveExpense(@ModelAttribute Expense expense) {
         expenseService.saveExpense(expense);
@@ -43,4 +51,26 @@ public class ExpenseController {
         expenseService.deleteExpense(id);
         return "redirect:/expenses";
     }
+    //Update
+
+    @GetMapping("/edit/{id}")
+    public String editExpense(@PathVariable Long id, Model model) {
+        Expense expense = expenseService.getExpenseById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Geçersiz ID: " + id));
+        prepareExpenseForm(model, expense);
+        return "expense_form";
+    }
+
+
+
+
+    // Categories
+
+    private void prepareExpenseForm(Model model, Expense expense) {
+        model.addAttribute("expense", expense);
+        model.addAttribute("categories", List.of("Gıda", "Ulaşım", "Fatura", "Eğlence", "Sağlık", "Diğer"));
+    }
+
+
+
 }
