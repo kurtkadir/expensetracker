@@ -1,10 +1,15 @@
 package com.kadir.expensetracker.controller;
 
+import com.kadir.expensetracker.model.Category;
 import com.kadir.expensetracker.model.Expense;
 import com.kadir.expensetracker.service.ExpenseService;
+import com.kadir.expensetracker.service.CategoryService;
+import com.kadir.expensetracker.controller.CategoryController.*;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import com.kadir.expensetracker.util.CategoryUtil;
 
 import java.util.List;
 
@@ -13,12 +18,15 @@ import java.util.List;
 public class ExpenseController {
 
     private final ExpenseService expenseService;
+    private final CategoryService categoryService;
 
-    public ExpenseController(ExpenseService expenseService) {
+    public ExpenseController(ExpenseService expenseService, CategoryService categoryService) {
         this.expenseService = expenseService;
+        this.categoryService= categoryService;
 
 
     }
+
 
 
     // Listing
@@ -40,7 +48,31 @@ public class ExpenseController {
 
     // Save
     @PostMapping("/save")
-    public String saveExpense(@ModelAttribute Expense expense) {
+    public String saveExpense(
+            @ModelAttribute Expense expense,
+            @RequestParam(value = "category", required = false) String categoryFromInput,
+            @RequestParam(value = "category_dummy", required = false) String categoryFromDropdown
+    ) {
+        String finalCategoryRaw;
+
+        if (categoryFromInput != null && !categoryFromInput.isBlank()) {
+            finalCategoryRaw = categoryFromInput;
+        } else if (categoryFromDropdown != null && !categoryFromDropdown.equals("__other__")) {
+            finalCategoryRaw = categoryFromDropdown;
+        } else {
+            finalCategoryRaw = "Belirtilmemiş";
+        }
+
+// ✅ normalize et
+        String finalCategory = CategoryUtil.normalize(finalCategoryRaw);
+
+// Kullan
+        expense.setCategory(finalCategory);
+
+        if (!categoryService.existsByNameIgnoreCase(finalCategory)) {
+            categoryService.save(new Category(finalCategory));
+        }
+
         expenseService.saveExpense(expense);
         return "redirect:/expenses";
     }
@@ -66,10 +98,14 @@ public class ExpenseController {
 
     // Categories
 
-    private void prepareExpenseForm(Model model, Expense expense) {
+    private void prepareExpenseForm( Model model, Expense expense) {
         model.addAttribute("expense", expense);
-        model.addAttribute("categories", List.of("Gıda", "Ulaşım", "Fatura", "Eğlence", "Sağlık", "Diğer"));
+        model.addAttribute("categories", categoryService.findAll());
     }
+
+
+
+
 
 
 

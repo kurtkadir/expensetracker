@@ -9,18 +9,56 @@
 <div class="container">
     <h2>Yeni Harcama</h2>
 
-    <form th:action="@{/expenses/save}" th:object="${expense}" method="post">
+    <form th:action="@{/expenses/save}" th:object="${expense}" method="post" onsubmit="return validateForm()">
+
+
         <div class="mb-3">
             <label for="title" class="form-label">Başlık</label>
             <input type="text" th:field="*{title}" class="form-control" id="title" required>
         </div>
 
         <div class="mb-3">
-            <label for="title" class="form-label">Kategori</label>
-            <select th:field="*{category}" class="form-select" id="category" required>
-                <option value="" disabled>-- Kategori Seçin --</option>
-                <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"></option>
-            </select>
+            <div class="mb-3">
+                <label for="category" class="form-label">Kategori</label>
+
+                <select id="categorySelect" name="category_dummy" class="form-select" required
+                        onchange="handleCategoryChange()">
+                    <option value="" disabled selected>-- Kategori Seçin --</option>
+                    <option th:each="cat : ${categories}" th:value="${cat.name}" th:text="${cat.name}"></option>
+                    <option value="__other__">Kategori Ekle...</option>
+                </select>
+
+                <input type="text" id="customCategoryInput" name="category"
+                       placeholder="Yeni kategori girin"
+                       class="form-control mt-2"
+                       style="display: none;"/>
+            </div>
+
+            <script>
+                function handleCategoryChange() {
+                const select = document.getElementById("categorySelect");
+                const customInput = document.getElementById("customCategoryInput");
+
+                if (select.value === "__other__") {
+                    customInput.style.display = "block";
+                    customInput.required = true;
+
+                    // select artık dummy olacak, input gerçek "category"
+                    select.name = "category_dummy";
+                    customInput.name = "category";
+                } else {
+                    customInput.style.display = "none";
+                    customInput.required = false;
+                    customInput.value = "";
+
+                    // seçilen dropdown, gerçek "category"
+                    select.name = "category";
+                    customInput.name = "category_dummy";
+                }
+            }
+
+            </script>
+
 
         </div>
 
@@ -40,3 +78,17 @@
 </div>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
