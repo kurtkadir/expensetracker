@@ -16,22 +16,33 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    // Kategorileri listele
     @GetMapping
     public String listCategories(Model model) {
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("category", new Category());
-        return "categories";
+        return "categories"; // templates/categories.html
     }
 
+    // Yeni kategori formu
+    @GetMapping("/new")
+    public String showCategoryForm(Model model) {
+        model.addAttribute("category", new Category());
+        return "category_form"; // yeni kategori formu şablonu
+    }
 
+    // Kategori kaydet
     @PostMapping("/save")
-    public String save(@ModelAttribute Category category) {
-        categoryService.save(category);
+    public String saveCategory(@ModelAttribute Category category) {
+        if (!categoryService.existsByNameIgnoreCase(category.getName())) {
+            categoryService.save(category);
+        }
         return "redirect:/categories";
     }
 
+    // Kategori sil
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
+    public String deleteCategory(@PathVariable Long id) {
         categoryService.delete(id);
         return "redirect:/categories";
     }
