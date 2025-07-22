@@ -1,34 +1,15 @@
 package com.kadir.expensetracker.service;
 
 import com.kadir.expensetracker.model.Expense;
-import com.kadir.expensetracker.repository.ExpenseRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
-@Service
-public class ExpenseService {
+public interface ExpenseService {
+    List<Expense> findAll();
 
-    private final ExpenseRepository expenseRepository;
+    Expense findById(Long id);
 
-    public ExpenseService(ExpenseRepository expenseRepository) {
-        this.expenseRepository = expenseRepository;
-    }
+    Expense save(Expense expense);
 
-    public List<Expense> getAllExpenses() {
-        return expenseRepository.findAll();
-    }
-
-    public void saveExpense(Expense expense) {
-        expenseRepository.save(expense);
-    }
-
-    public void deleteExpense(Long id) {
-        expenseRepository.deleteById(id);
-    }
-
-    public Optional<Expense> getExpenseById(Long id) {
-        return expenseRepository.findById(id);
-    }
+    void delete(Long id);
 }

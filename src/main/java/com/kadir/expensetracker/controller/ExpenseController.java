@@ -1,9 +1,10 @@
 package com.kadir.expensetracker.controller;
 
+import com.kadir.expensetracker.model.Category;
 import com.kadir.expensetracker.model.Expense;
 import com.kadir.expensetracker.service.CategoryService;
 import com.kadir.expensetracker.service.ExpenseService;
-import com.kadir.expensetracker.util.CategoryUtil;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,55 +21,48 @@ public class ExpenseController {
         this.categoryService = categoryService;
     }
 
-    // Harcamaları listele
     @GetMapping
     public String listExpenses(Model model) {
-        model.addAttribute("expenses", expenseService.getAllExpenses());
-        return "expenses"; // templates/expenses.html
+        model.addAttribute("expenses", expenseService.findAll());
+        return "expenses";
     }
 
-    // Yeni harcama formu
     @GetMapping("/new")
     public String showExpenseForm(Model model) {
-        model.addAttribute("expense", new Expense());
-        model.addAttribute("categories", categoryService.findAll()); // kategori listesini ver
-        return "expense_form"; // templates/expense_form.html
+        prepareExpenseForm(model, new Expense());
+        return "expense_form";
     }
 
-    // Harcama kaydet
     @PostMapping("/save")
-    public String saveExpense(@ModelAttribute Expense expense,
-                              @RequestParam("category") String categoryRaw) {
+    public String saveExpense(@ModelAttribute("expense") @Valid Expense expense,
+                              @RequestParam(name = "category", required = false) String rawCategoryName) {
 
-        // Kategoriyi normalize et
-        String normalizedCategory = CategoryUtil.normalize(categoryRaw);
-
-        // Kategorinin önceden var olduğunu varsayıyoruz, yoksa hata olabilir (isteğe bağlı kontrol)
-        if (!categoryService.existsByNameIgnoreCase(normalizedCategory)) {
-            // İstersen burada hata fırlatabilir ya da kullanıcıyı yönlendirebilirsin
-            // throw new IllegalArgumentException("Kategori mevcut değil: " + normalizedCategory);
+        if (rawCategoryName != null && !rawCategoryName.trim().isEmpty()) {
+            Category category = categoryService.findOrCreateByName(rawCategoryName);
+            expense.setCategory(category.getName()); // Expense içinde sadece ad string olarak tutuluyor
         }
 
-        expense.setCategory(normalizedCategory);
-
-        expenseService.saveExpense(expense);
+        expenseService.save(expense);
         return "redirect:/expenses";
     }
 
-    // Harcama sil
-    @GetMapping("/delete/{id}")
-    public String deleteExpense(@PathVariable Long id) {
-        expenseService.deleteExpense(id);
-        return "redirect:/expenses";
-    }
-
-    // Harcama düzenle
     @GetMapping("/edit/{id}")
     public String editExpense(@PathVariable Long id, Model model) {
-        Expense expense = expenseService.getExpenseById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Geçersiz ID: " + id));
+        Expense expense = expenseService.findById(id);
+        if (expense == null) return "redirect:/expenses"; // not found
+        prepareExpenseForm(model, expense);
+        return "expense_form";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteExpense(@PathVariable Long id) {
+        expenseService.delete(id);
+        return "redirect:/expenses";
+    }
+
+    // Yardımcı metot
+    private void prepareExpenseForm(Model model, Expense expense) {
         model.addAttribute("expense", expense);
         model.addAttribute("categories", categoryService.findAll());
-        return "expense_form";
     }
 }

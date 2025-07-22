@@ -1,39 +1,17 @@
 package com.kadir.expensetracker.service;
 
 import com.kadir.expensetracker.model.Category;
-import com.kadir.expensetracker.repository.CategoryRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class CategoryService {
+public interface CategoryService {
+    List<Category> findAll();
 
-    private final CategoryRepository categoryRepository;
+    Category save(Category category);
 
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    void delete(Long id);
 
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
-    }
+    boolean existsByNameIgnoreCase(String name);
 
-    public void save(Category category) {
-        if (!categoryRepository.existsByName(category.getName())) {
-            categoryRepository.save(category);
-        }
-    }
-
-    public void delete(Long id) {
-        categoryRepository.deleteById(id);
-    }
-    public boolean existsByName(String name) {
-        return categoryRepository.existsByName(name);
-    }
-    public boolean existsByNameIgnoreCase(String name) {
-        return categoryRepository.existsByNameIgnoreCase(name);
-    }
-
-
+    Category findOrCreateByName(String name);
 }
