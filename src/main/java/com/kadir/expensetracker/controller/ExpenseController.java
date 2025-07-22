@@ -49,6 +49,7 @@ public class ExpenseController {
     @GetMapping("/edit/{id}")
     public String editExpense(@PathVariable Long id, Model model) {
         Expense expense = expenseService.findById(id);
+        System.out.println();
         if (expense == null) return "redirect:/expenses"; // not found
         prepareExpenseForm(model, expense);
         return "expense_form";
