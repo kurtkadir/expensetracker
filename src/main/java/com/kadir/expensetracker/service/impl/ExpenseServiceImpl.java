@@ -1,15 +1,19 @@
 package com.kadir.expensetracker.service.impl;
 
-import com.kadir.expensetracker.model.Expense;
 import com.kadir.expensetracker.model.Category;
+import com.kadir.expensetracker.model.Expense;
 import com.kadir.expensetracker.repository.ExpenseRepository;
-import com.kadir.expensetracker.service.ExpenseService;
 import com.kadir.expensetracker.service.CategoryService;
+import com.kadir.expensetracker.service.ExpenseService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementation of ExpenseService interface.
+ * Provides business logic for expense-related operations including CRUD operations.
+ */
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
 

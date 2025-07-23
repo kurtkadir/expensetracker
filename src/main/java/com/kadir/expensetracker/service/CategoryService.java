@@ -4,6 +4,10 @@ import com.kadir.expensetracker.model.Category;
 
 import java.util.List;
 
+/**
+ * Service interface for category-related operations.
+ * Defines methods for managing category entities and business logic.
+ */
 public interface CategoryService {
     List<Category> findAll();
 

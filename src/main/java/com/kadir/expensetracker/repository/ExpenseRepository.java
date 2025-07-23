@@ -9,6 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Repository interface for Expense entity.
+ * Provides data access methods for expense-related database operations.
+ */
 @Repository
 public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     

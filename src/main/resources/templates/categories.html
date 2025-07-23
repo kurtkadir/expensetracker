@@ -9,11 +9,6 @@
 <div class="container">
     <h2>Category Management</h2>
 
-    <!-- Error Message Display -->
-    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
-        <span th:text="${errorMessage}">Error message</span>
-    </div>
-
     <form th:action="@{/categories/save}" th:object="${category}" method="post" class="mb-3">
         <div class="input-group">
             <input type="text" th:field="*{name}" class="form-control" placeholder="Enter new category name" required>

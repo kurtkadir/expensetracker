@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Implementation of CategoryService interface.
+ * Provides business logic for category-related operations including CRUD operations and normalization.
+ */
 @Service
 public class CategoryServiceImpl implements CategoryService {
 

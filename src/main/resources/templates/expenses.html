@@ -9,11 +9,6 @@
 <div class="container">
     <h1 class="mb-4">Expense List</h1>
 
-    <!-- Error Message Display -->
-    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
-        <span th:text="${errorMessage}">Error message</span>
-    </div>
-
     <a href="/expenses/new" class="btn btn-primary mb-3">+ Add New Expense</a>
     <a href="/categories" class="btn btn-secondary mb-3 ms-2">Manage Categories</a>
 

@@ -13,6 +13,10 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * Entity representing an expense record.
+ * Contains information about individual expenses including amount, date, and category.
+ */
 @Entity
 @Data
 public class Expense {

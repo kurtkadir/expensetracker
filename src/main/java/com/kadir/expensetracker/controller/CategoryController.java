@@ -8,6 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for managing category-related operations.
+ * Handles CRUD operations for categories and provides form handling.
+ */
 @Controller
 @RequestMapping("/categories")
 public class CategoryController {
@@ -48,15 +52,8 @@ public class CategoryController {
             model.addAttribute("categories", categoryService.findAll());
             return "categories";
         }
-        
-        try {
-            // Use the new createCategory method for consistent normalization
-            categoryService.createCategory(category.getName());
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            model.addAttribute("categories", categoryService.findAll());
-            return "categories";
-        }
+
+        categoryService.createCategory(category.getName());
         
         return "redirect:/categories";
     }

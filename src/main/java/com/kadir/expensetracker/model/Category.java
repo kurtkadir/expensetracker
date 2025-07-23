@@ -9,6 +9,10 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity representing a category for expenses.
+ * Categories help organize and classify different types of expenses.
+ */
 @Entity
 @Data
 @NoArgsConstructor
