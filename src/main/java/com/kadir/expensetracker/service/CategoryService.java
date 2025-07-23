@@ -14,4 +14,10 @@ public interface CategoryService {
     boolean existsByNameIgnoreCase(String name);
 
     Category findOrCreateByName(String name);
+
+    /**
+     * Create a new category with proper validation and normalization
+     * This method ensures consistent category creation across the application
+     */
+    Category createCategory(String categoryName);
 }

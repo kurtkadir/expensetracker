@@ -12,4 +12,6 @@ public interface ExpenseService {
     Expense save(Expense expense);
 
     void delete(Long id);
+
+    Expense saveWithCategory(Expense expense, String rawCategoryName);
 }

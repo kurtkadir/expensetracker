@@ -2,80 +2,86 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Yeni Harcama Ekle</title>
+    <title>Add/Edit Expense</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 </head>
 <body class="p-4">
 <div class="container">
-    <h2>Yeni Harcama</h2>
+    <h2 th:text="${expense.id == null ? 'Add New Expense' : 'Edit Expense'}">Add/Edit Expense</h2>
 
     <form th:action="@{/expenses/save}" th:object="${expense}" method="post" onsubmit="return validateForm()">
-
-
         <div class="mb-3">
-            <label for="title" class="form-label">Başlık</label>
+            <label for="title" class="form-label">Title</label>
             <input type="text" th:field="*{title}" class="form-control" id="title" required>
-        </div>
-
-        <div class="mb-3">
-            <div class="mb-3">
-                <label for="category" class="form-label">Kategori</label>
-
-                <select id="categorySelect" name="category_dummy" class="form-select" required
-                        onchange="handleCategoryChange()">
-                    <option value="" disabled selected>-- Kategori Seçin --</option>
-                    <option th:each="cat : ${categories}" th:value="${cat.name}" th:text="${cat.name}"></option>
-                    <option value="__other__">Kategori Ekle...</option>
-                </select>
-
-                <input type="text" id="customCategoryInput" name="category"
-                       placeholder="Yeni kategori girin"
-                       class="form-control mt-2"
-                       style="display: none;"/>
+            <div th:if="${#fields.hasErrors('title')}" class="text-danger mt-1">
+                <span th:errors="*{title}">Title errors</span>
             </div>
-
-            <script>
-                function handleCategoryChange() {
-                const select = document.getElementById("categorySelect");
-                const customInput = document.getElementById("customCategoryInput");
-
-                if (select.value === "__other__") {
-                    customInput.style.display = "block";
-                    customInput.required = true;
-
-                    // select artık dummy olacak, input gerçek "category"
-                    select.name = "category_dummy";
-                    customInput.name = "category";
-                } else {
-                    customInput.style.display = "none";
-                    customInput.required = false;
-                    customInput.value = "";
-
-                    // seçilen dropdown, gerçek "category"
-                    select.name = "category";
-                    customInput.name = "category_dummy";
-                }
-            }
-
-            </script>
-
-
         </div>
 
         <div class="mb-3">
-            <label for="amount" class="form-label">Tutar (₺)</label>
+            <label for="categorySelect" class="form-label">Category</label>
+            <select id="categorySelect" name="category_dummy" class="form-select" required
+                    onchange="handleCategoryChange()">
+                <option value="" disabled selected>-- Select Category --</option>
+                <option th:each="cat : ${categories}" th:value="${cat.name}" th:text="${cat.name}"></option>
+                <option value="__other__">Add New Category...</option>
+            </select>
+
+            <input type="text" id="customCategoryInput" name="category"
+                   placeholder="Enter new category name"
+                   class="form-control mt-2"
+                   style="display: none;"/>
+        </div>
+
+        <div class="mb-3">
+            <label for="amount" class="form-label">Amount (₺)</label>
             <input type="number" step="0.01" th:field="*{amount}" class="form-control" id="amount" required>
+            <div th:if="${#fields.hasErrors('amount')}" class="text-danger mt-1">
+                <span th:errors="*{amount}">Amount errors</span>
+            </div>
         </div>
 
         <div class="mb-3">
-            <label for="date" class="form-label">Tarih</label>
+            <label for="date" class="form-label">Date</label>
             <input type="date" th:field="*{date}" class="form-control" id="date" required>
+            <div th:if="${#fields.hasErrors('date')}" class="text-danger mt-1">
+                <span th:errors="*{date}">Date errors</span>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-success">Kaydet</button>
-        <a href="/expenses" class="btn btn-secondary">İptal</a>
+        <button type="submit" class="btn btn-success">Save</button>
+        <a href="/expenses" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
+
+<script>
+    function handleCategoryChange() {
+        const select = document.getElementById("categorySelect");
+        const customInput = document.getElementById("customCategoryInput");
+
+        if (select.value === "__other__") {
+            customInput.style.display = "block";
+            customInput.required = true;
+            select.name = "category_dummy";
+            customInput.name = "category";
+        } else {
+            customInput.style.display = "none";
+            customInput.required = false;
+            customInput.value = "";
+            select.name = "category";
+            customInput.name = "category_dummy";
+        }
+    }
+
+    function validateForm() {
+        const amount = document.getElementById("amount").value;
+        if (amount <= 0) {
+            alert("Amount must be greater than 0");
+            return false;
+        }
+        return true;
+    }
+</script>
 </body>
 </html>
 
